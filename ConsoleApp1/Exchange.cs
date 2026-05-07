@@ -27,7 +27,8 @@ public static class Exchange
                    Wallet[(int)to] += FinalAmount;
                     // Console.WriteLine($"Exchanged {input} at rate {Rate} ");
                     Console.WriteLine($"You now have {Wallet[(int)to]} {to} in the new currency and {Wallet[(int)from]} {from} left ");
-                    Console.WriteLine("Do you want to exchange more? (yes = 1 /no = 2)");
+                    Colour.Color("Do you want to exchange more? (yes = 1 /no = 2)", ConsoleColor.Green);
+                    //Console.WriteLine("Do you want to exchange more? (yes = 1 /no = 2)");
                     string choice = InputHelper.INput();
                     if (choice == "1")
                     {
@@ -72,7 +73,7 @@ public static class Exchange
                 Console.WriteLine("Tax 2% ");
                 Console.WriteLine($"Added: {FinalAmount} , Current balance: {Wallet[(int)currency]} " + tittle);
 
-                Console.WriteLine("Do you want to add more? (yes = 1 /no = 2)");
+                Colour.Color("Do you want to add more? (yes = 1 /no = 2)", ConsoleColor.Green);
                 string choice = InputHelper.INput();
                 if (choice == "1")
                 {
@@ -104,7 +105,7 @@ public static class Exchange
                     Wallet[(int)currency] = FinalAmount;
                     Console.WriteLine($"You withdrew this amount {input}" + tittle );
                     Console.WriteLine($"Your current balance is {FinalAmount} " + tittle);
-                    Console.WriteLine("Do you want to withdraw more? (yes = 1 /no = 2)");
+                    Colour.Color("Do you want to withdraw more? (yes = 1 /no = 2)", ConsoleColor.Green);
                     string choice = InputHelper.INput();
                     if (choice == "1")
                     {

@@ -8,7 +8,7 @@ public class Program
 
 
         float[] Wallet = new float[5]; //0,1,2,3,4
-        Wallet[(int)Currency.PLN] = 0; //
+        Wallet[(int)Currency.PLN] = 1000; //
         Wallet[(int)Currency.EUR] = 0; // 
         Wallet[(int)Currency.USD] = 0;
         Wallet[(int)Currency.KGS] = 0;

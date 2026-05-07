@@ -10,7 +10,7 @@ namespace ConsoleApp1
     {
 
 
-        public static string ShowMenu(float[] Wallet, float[,] exchangeRates)  //Menu.ShowMenu(Wallet, exchangeRates);
+        public static void ShowMenu(float[] Wallet, float[,] exchangeRates)  //Menu.ShowMenu(Wallet, exchangeRates);
         {
             while (true)
             {
@@ -20,7 +20,7 @@ namespace ConsoleApp1
                 Console.WriteLine(" ~ Withdraw Money. Option - 2");
                 Console.WriteLine(" ~ Exchange Money. Option - 3"); // add current exchange rate for each currency
                 Console.WriteLine(" ~ Current Balance. Option - 4");
-                string choice = InputHelper.INput();
+                string choice = InputHelper.INput().Trim();
 
                 switch (choice)
                 {
@@ -40,6 +40,10 @@ namespace ConsoleApp1
                         Console.WriteLine("Invalid choice. Please try again.");
                         break;
                 }
+                if (choice == "0")
+                {
+                    break;
+                }
             }
         }
 
@@ -56,7 +60,8 @@ namespace ConsoleApp1
                 Console.WriteLine(" KGS = 4");
                 Console.WriteLine(" RUB = 5");
                 Console.WriteLine(" Exit = 0");
-                string Cur = InputHelper.INput();
+                string Cur = InputHelper.INput().Trim();
+                
                 switch (Cur)
                 {
                     case "1":
@@ -84,8 +89,11 @@ namespace ConsoleApp1
                         Console.WriteLine($"Your Balance: {Wallet[(int)Currency.RUB]} RUB");
                         Exchange.TopUp(Wallet, Currency.RUB, "RUB");
                         break;
+                    case "0":
+                        return;
                    
                 }
+                
 
 
             }
@@ -105,7 +113,7 @@ namespace ConsoleApp1
                 Console.WriteLine(" KGS = 4");
                 Console.WriteLine(" RUB = 5");
                 Console.WriteLine(" Exit = 0");
-                string Cur = InputHelper.INput();
+                string Cur = InputHelper.INput().Trim();
               
                 switch (Cur)
                 {
@@ -130,6 +138,8 @@ namespace ConsoleApp1
                         Console.WriteLine("You selected RUB.");
                         Exchange.Withdraw(Wallet, Currency.RUB, "RUB");
                         break;
+                    case "0":
+                        return;
                    
                 }
             }
@@ -149,7 +159,7 @@ namespace ConsoleApp1
                 Console.WriteLine(" KGS = 4");
                 Console.WriteLine(" RUB = 5");
                 Console.WriteLine(" Exit = 0");
-                string input = InputHelper.INput();
+                string input = InputHelper.INput().Trim();
                 
                 switch (input)
                 {
@@ -168,7 +178,8 @@ namespace ConsoleApp1
                     case "5":
                         AllExchangeRate.RUB(Wallet, exchangeRates);
                         break;
-                       
+                    case "0":
+                        return;
                 }
             }
         }
@@ -189,7 +200,7 @@ namespace ConsoleApp1
                 Console.WriteLine($"RUB: {Wallet[(int)Currency.RUB]}");
                 Console.WriteLine("get back to menu - 0");
                 Console.WriteLine("Current Exchange Rates:");
-                string input = InputHelper.INput();
+                string input = InputHelper.INput().Trim();
 
                 if (input == "0")
                 {
