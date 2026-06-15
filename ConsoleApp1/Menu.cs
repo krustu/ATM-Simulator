@@ -1,41 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
-using System.Text;
-
 namespace ConsoleApp1
 {
     public static class Menu
     {
-
-
-        public static string ShowMenu(float[] Wallet, float[,] exchangeRates)  //Menu.ShowMenu(Wallet, exchangeRates);
+        public static void ShowMenu(Wallet wallet)
         {
             while (true)
             {
+                Console.WriteLine();
                 Console.WriteLine("Menu:");
-                Console.WriteLine(" Please enter the option: ");
-                Console.WriteLine(" ~ Top Up Money . Option - 1");
-                Console.WriteLine(" ~ Withdraw Money. Option - 2");
-                Console.WriteLine(" ~ Exchange Money. Option - 3"); // add current exchange rate for each currency
-                Console.WriteLine(" ~ Current Balance. Option - 4");
-                string choice = InputHelper.INput();
+                Console.WriteLine(" ~ Top Up Money    - 1");
+                Console.WriteLine(" ~ Withdraw Money  - 2");
+                Console.WriteLine(" ~ Exchange Money  - 3");
+                Console.WriteLine(" ~ Current Balance - 4");
+                Console.WriteLine(" ~ Exit            - 0");
 
+                string choice = InputHelper.ReadChoice();
                 switch (choice)
                 {
                     case "1":
-                        OptionTopUp(Wallet);
+                        OptionTopUp(wallet);
                         break;
                     case "2":
-                        OptionWithdraw(Wallet);
+                        OptionWithdraw(wallet);
                         break;
                     case "3":
-                        OptionExchange(Wallet, exchangeRates);
+                        OptionExchange(wallet);
                         break;
                     case "4":
-                        OptionBalance(Wallet, exchangeRates);
+                        OptionBalance(wallet);
                         break;
+                    case "0":
+                        Console.WriteLine("Thank you for using KrustBank. Goodbye!");
+                        return;
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
                         break;
@@ -43,165 +39,71 @@ namespace ConsoleApp1
             }
         }
 
-        public static void OptionTopUp(float[] Wallet)
+        private static void OptionTopUp(Wallet wallet)
         {
-            while (true)
+            Console.WriteLine("You selected Top Up Money.");
+            Currency? currency = AskCurrency("top up");
+            if (currency != null)
             {
-
-                Console.WriteLine("You selected Option 1.(Top Up Money)");
-                Console.WriteLine("Please select the currency to top up:");
-                Console.WriteLine(" PLN = 1");
-                Console.WriteLine(" EUR = 2");
-                Console.WriteLine(" USD = 3");
-                Console.WriteLine(" KGS = 4");
-                Console.WriteLine(" RUB = 5");
-                Console.WriteLine(" Exit = 0");
-                string Cur = InputHelper.INput();
-                switch (Cur)
-                {
-                    case "1":
-                        Console.WriteLine("You selected PLN.");
-                        Console.WriteLine($"Your Balance: {Wallet[(int)Currency.PLN]} PLN");
-                        Exchange.TopUp(Wallet, Currency.PLN, "PLN");
-                        break;
-                    case "2":
-                        Console.WriteLine("You selected EUR.");
-                        Console.WriteLine($"Your Balance: {Wallet[(int)Currency.EUR]} EUR");
-                        Exchange.TopUp(Wallet, Currency.EUR, "EUR");
-                        break;
-                    case "3":
-                        Console.WriteLine("You selected USD.");
-                        Console.WriteLine($"Your Balance: {Wallet[(int)Currency.USD]} USD");
-                        Exchange.TopUp(Wallet, Currency.USD, "USD");
-                        break;
-                    case "4":
-                        Console.WriteLine("You selected KGS.");
-                        Console.WriteLine($"Your Balance: {Wallet[(int)Currency.KGS]} KGS");
-                        Exchange.TopUp(Wallet, Currency.KGS, "KGS");
-                        break;
-                    case "5":
-                        Console.WriteLine("You selected RUB.");
-                        Console.WriteLine($"Your Balance: {Wallet[(int)Currency.RUB]} RUB");
-                        Exchange.TopUp(Wallet, Currency.RUB, "RUB");
-                        break;
-                   
-                }
-
-
-            }
-
-        }
-
-        public static void OptionWithdraw(float[] Wallet)
-        {
-
-            while (true)
-            {
-                Console.WriteLine("You selected Option 2. (Withdraw Money)");
-                Console.WriteLine("Please select the currency to withdraw:");
-                Console.WriteLine(" PLN = 1");
-                Console.WriteLine(" EUR = 2");
-                Console.WriteLine(" USD = 3");
-                Console.WriteLine(" KGS = 4");
-                Console.WriteLine(" RUB = 5");
-                Console.WriteLine(" Exit = 0");
-                string Cur = InputHelper.INput();
-              
-                switch (Cur)
-                {
-                    case "1":
-                        Console.WriteLine("You selected PLN.");
-                        
-                        Exchange.Withdraw(Wallet, Currency.PLN, "PLN");
-                        break;
-                    case "2":
-                        Console.WriteLine("You selected EUR.");
-                        Exchange.Withdraw(Wallet, Currency.EUR, "EUR");
-                        break;
-                    case "3":
-                        Console.WriteLine("You selected USD.");
-                        Exchange.Withdraw(Wallet, Currency.USD, "USD");
-                        break;
-                    case "4":
-                        Console.WriteLine("You selected KGS.");
-                        Exchange.Withdraw(Wallet, Currency.KGS, "KGS");
-                        break;
-                    case "5":
-                        Console.WriteLine("You selected RUB.");
-                        Exchange.Withdraw(Wallet, Currency.RUB, "RUB");
-                        break;
-                   
-                }
+                Exchange.TopUp(wallet, currency.Value);
             }
         }
 
-
-
-        public static void OptionExchange(float[] Wallet , float[,] exchangeRates)
+        private static void OptionWithdraw(Wallet wallet)
         {
-            while (true)
+            Console.WriteLine("You selected Withdraw Money.");
+            Currency? currency = AskCurrency("withdraw");
+            if (currency != null)
             {
-                Console.WriteLine("You selected Option 3.(Exchange Money");
-                Console.WriteLine("Select Your Currency:");
-                Console.WriteLine(" PLN = 1");
-                Console.WriteLine(" EUR = 2");
-                Console.WriteLine(" USD = 3");
-                Console.WriteLine(" KGS = 4");
-                Console.WriteLine(" RUB = 5");
-                Console.WriteLine(" Exit = 0");
-                string input = InputHelper.INput();
-                
-                switch (input)
-                {
-                    case "1":
-                        AllExchangeRate.PLN(Wallet, exchangeRates);
-                        break;
-                    case "2":
-                        AllExchangeRate.EUR(Wallet, exchangeRates);
-                        break;
-                    case "3":
-                        AllExchangeRate.USD(Wallet, exchangeRates);
-                        break;
-                    case "4":
-                        AllExchangeRate.KGS(Wallet, exchangeRates);
-                        break;
-                    case "5":
-                        AllExchangeRate.RUB(Wallet, exchangeRates);
-                        break;
-                       
-                }
+                Exchange.Withdraw(wallet, currency.Value);
             }
         }
 
-
-
-
-        public static void OptionBalance(float[] Wallet, float[,] exchangeRates)
+        private static void OptionExchange(Wallet wallet)
         {
+            Console.WriteLine("You selected Exchange Money.");
+            Currency? currency = AskCurrency("exchange");
+            if (currency != null)
+            {
+                AllExchangeRate.ShowExchangeMenu(wallet, currency.Value);
+            }
+        }
+
+        private static void OptionBalance(Wallet wallet)
+        {
+            Console.WriteLine("You selected Current Balance.");
+            foreach (Currency currency in Enum.GetValues<Currency>())
+            {
+                Console.WriteLine($" {currency}: {wallet.GetBalance(currency)}");
+            }
+        }
+
+        // Shows the currency list once and returns the chosen currency,
+        // or null if the user typed 0 to go back. Used by every option above.
+        private static Currency? AskCurrency(string action)
+        {
+            Currency[] all = Enum.GetValues<Currency>();
             while (true)
             {
+                Console.WriteLine($"Please select the currency to {action}:");
+                for (int i = 0; i < all.Length; i++)
+                {
+                    Console.WriteLine($" {all[i]} = {i + 1}");
+                }
+                Console.WriteLine(" Exit = 0");
 
-                Console.WriteLine("You selected Option 4. (Check Balance)");
-                Console.WriteLine($"PLN: {Wallet[(int)Currency.PLN]}");
-                Console.WriteLine($"EUR: {Wallet[(int)Currency.EUR]}");
-                Console.WriteLine($"USD: {Wallet[(int)Currency.USD]}");
-                Console.WriteLine($"KGS: {Wallet[(int)Currency.KGS]}");
-                Console.WriteLine($"RUB: {Wallet[(int)Currency.RUB]}");
-                Console.WriteLine("get back to menu - 0");
-                Console.WriteLine("Current Exchange Rates:");
-                string input = InputHelper.INput();
-
+                string input = InputHelper.ReadChoice();
                 if (input == "0")
                 {
-                    break;
+                    return null;
                 }
 
-                else
+                if (int.TryParse(input, out int choice) && choice >= 1 && choice <= all.Length)
                 {
-                    Console.WriteLine("Sorry in procees of updating exchange rates, you cannot check the balance. Please try again later.");
-                    break;
+                    return all[choice - 1];
                 }
 
+                Console.WriteLine("Invalid choice. Please try again.");
             }
         }
     }

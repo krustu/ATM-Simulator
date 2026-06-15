@@ -1,46 +1,29 @@
-﻿using ConsoleApp1;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace ConsoleApp1
 {
     public static class InputHelper
     {
-       
-        public static string INput()
+        // Reads one menu choice as text. Each menu's switch decides what is valid,
+        // so this helper does not need to know the allowed options.
+        public static string ReadChoice()
         {
-            while (true)
-            {
-                Console.Write("");
-                string choice = Console.ReadLine();
-                if (choice == "1" || choice == "2" || choice == "3" || choice == "4" || choice == "5" || choice == "0")
-                {
-                    return choice;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid choice. Please try again.");
-                   
-                }
-            }
+            string? input = Console.ReadLine();
+            return input == null ? "" : input.Trim();
         }
-        public static float GetFloatInput(string instruction)
+
+        // Keeps asking until the user types a real number, then returns it.
+        public static decimal GetAmount(string instruction)
         {
-            float Answer;
             while (true)
             {
                 Console.WriteLine(instruction);
-                string input = Console.ReadLine();
-                if (float.TryParse(input, out Answer))
-                {
-                    Console.WriteLine("Success");
-                    return Answer;
+                string? input = Console.ReadLine();
 
+                if (decimal.TryParse(input, out decimal amount))
+                {
+                    return amount;
                 }
-                else {
-                    Console.WriteLine("Invalid input. Please enter a valid number." + instruction);
-                }
+
+                Console.WriteLine("Invalid input. Please enter a valid number.");
             }
         }
     }

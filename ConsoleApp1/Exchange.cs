@@ -1,122 +1,101 @@
-﻿using ConsoleApp1;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
-
 namespace ConsoleApp1
 {
-public static class Exchange
+    // The three money operations. Each one talks to the Wallet through its
+    // public methods, so it never touches the balances directly.
+    public static class Exchange
     {
-       
+        private const decimal TopUpKeepRate = 0.98m; // 2% tax is kept by the bank.
 
-
-        public static void ExchangeExchange(float[] Wallet, Currency from  /*What you want to exchange*/, Currency to , float Rate) // auto choice 100 , 500 , 2000,  ////Exchange.ExchangeExchange(Wallet, 0, 1, Exch Rate)
-        {
-            while (true) 
-            { 
-            float input = InputHelper.GetFloatInput("Enter amount to exchange:");
-               if(input == 0)
-                {
-                    break;
-                }
-               if (input <= Wallet[(int)from] && input > 0)
-               {
-                   float FinalAmount = input * Rate;
-                   Wallet[(int)from] -= input;
-                   Wallet[(int)to] += FinalAmount;
-                    // Console.WriteLine($"Exchanged {input} at rate {Rate} ");
-                    Console.WriteLine($"You now have {Wallet[(int)to]} {to} in the new currency and {Wallet[(int)from]} {from} left ");
-                    Console.WriteLine("Do you want to exchange more? (yes = 1 /no = 2)");
-                    string choice = InputHelper.INput();
-                    if (choice == "1")
-                    {
-                        continue;
-                    }
-                    else if (choice == "2")
-                    {
-                        Console.WriteLine("Exiting top-up process.");
-                        break;
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Invalid input. Please enter a valid number.");
-                }
-                // Exchange.ExchangeExchange
-            }
-        }
-
-
-
-
-        public static void TopUp(float[] Wallet, Currency currency, string tittle) /*Exchange.TopUp(Wallet, Currency.-Currency-, "-Currency-"); */
+        public static void TopUp(Wallet wallet, Currency currency)
         {
             while (true)
             {
-                float input = InputHelper.GetFloatInput("");/*select ur  currency*/
-                if (input == 0) 
+                decimal input = InputHelper.GetAmount($"How much {currency} do you want to add? (0 to exit)");
+                if (input == 0)
                 {
                     Console.WriteLine("Exiting top-up process.");
                     break;
-                    
                 }
-                else if (input < 0)
+
+                decimal added = input * TopUpKeepRate;
+                if (!wallet.Deposit(currency, added))
                 {
                     Console.WriteLine("Invalid input. Please enter a positive number.");
                     continue;
                 }
-                float FinalAmount = input * 0.98f;
 
-                Wallet[(int)currency] += FinalAmount;
-                Console.WriteLine("Tax 2% ");
-                Console.WriteLine($"Added: {FinalAmount} , Current balance: {Wallet[(int)currency]} " + tittle);
+                Console.WriteLine("Tax 2% applied.");
+                Console.WriteLine($"Added: {added} {currency}. Current balance: {wallet.GetBalance(currency)} {currency}");
 
-                Console.WriteLine("Do you want to add more? (yes = 1 /no = 2)");
-                string choice = InputHelper.INput();
-                if (choice == "1")
+                if (!AskAgain("add"))
                 {
-                    continue;
-                }
-                else if (choice == "2")
-                {
-                    Console.WriteLine("Exiting top-up process.");
                     break;
                 }
             }
         }
-        public static void Withdraw(float[] Wallet , Currency currency, string tittle) //Exchange.Withdraw(Wallet, Currency.-Currency-, "-Currency-");
+
+        public static void Withdraw(Wallet wallet, Currency currency)
         {
             while (true)
             {
-                Console.WriteLine($"Your current balance is {Wallet[(int)currency]} " + tittle);
-
-                float input = InputHelper.GetFloatInput("choose your amount to withdraw:");
-                Console.Write("Exit = 0 ");
+                Console.WriteLine($"Your current balance is {wallet.GetBalance(currency)} {currency}");
+                decimal input = InputHelper.GetAmount("Choose your amount to withdraw: (0 to exit)");
                 if (input == 0)
                 {
-                   Console.WriteLine("Exiting withdraw process. ");
+                    Console.WriteLine("Exiting withdraw process.");
                     break;
                 }
-                else if(input <= Wallet[(int)currency] && input > 0)        // add limit for withdraw
+
+                if (!wallet.Withdraw(currency, input))
                 {
-                    float FinalAmount = Wallet[(int)currency] - input;
-                    Wallet[(int)currency] = FinalAmount;
-                    Console.WriteLine($"You withdrew this amount {input}" + tittle );
-                    Console.WriteLine($"Your current balance is {FinalAmount} " + tittle);
-                    Console.WriteLine("Do you want to withdraw more? (yes = 1 /no = 2)");
-                    string choice = InputHelper.INput();
-                    if (choice == "1")
-                    {
-                        continue;
-                    }
-                    else if (choice == "2")
-                    {
-                        Console.WriteLine("Exiting withdraw process.");
-                        break;
-                    }
+                    Console.WriteLine("Not enough money (or invalid amount). Please try again.");
+                    continue;
+                }
+
+                Console.WriteLine($"You withdrew {input} {currency}.");
+                Console.WriteLine($"Your current balance is {wallet.GetBalance(currency)} {currency}");
+
+                if (!AskAgain("withdraw"))
+                {
+                    break;
                 }
             }
+        }
+
+        public static void Convert(Wallet wallet, Currency from, Currency to, decimal rate)
+        {
+            while (true)
+            {
+                decimal input = InputHelper.GetAmount($"Enter amount of {from} to exchange: (0 to exit)");
+                if (input == 0)
+                {
+                    break;
+                }
+
+                // Take the source money first; only add the converted amount if that succeeds.
+                if (!wallet.Withdraw(from, input))
+                {
+                    Console.WriteLine("Not enough money (or invalid amount). Please try again.");
+                    continue;
+                }
+
+                decimal converted = input * rate;
+                wallet.Deposit(to, converted);
+
+                Console.WriteLine($"You now have {wallet.GetBalance(to)} {to} and {wallet.GetBalance(from)} {from} left.");
+
+                if (!AskAgain("exchange"))
+                {
+                    break;
+                }
+            }
+        }
+
+        // Shared yes/no prompt used by all three operations.
+        private static bool AskAgain(string action)
+        {
+            Console.WriteLine($"Do you want to {action} more? (yes = 1 / no = 2)");
+            return InputHelper.ReadChoice() == "1";
         }
     }
 }
